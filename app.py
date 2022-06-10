@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 from uuid import uuid4
+import json
 
 from boggle import BoggleGame
 
@@ -26,4 +27,4 @@ def new_game():
     game = BoggleGame()
     games[game_id] = game
 
-    return {"gameId": "need-real-id", "board": "need-real-board"}
+    return json.dumps({"gameId": game_id, "board": game.board})
