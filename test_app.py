@@ -1,5 +1,6 @@
 from unittest import TestCase
 import json
+from boggle import BoggleGame
 
 from app import app, games
 
@@ -15,7 +16,6 @@ class BoggleAppTestCase(TestCase):
 
     def setUp(self):
         """Stuff to do before every test."""
-        games = {}
         self.client = app.test_client()
         app.config['TESTING'] = True
 
@@ -49,6 +49,27 @@ class BoggleAppTestCase(TestCase):
             self.assertIn(response_json["gameId"], games)
 
     def test_score_word(self):
-        """Test passing a word"""
+        """Test scoring a word """
 
-        #with self.client as client:
+        with self.client as client:
+            games["1"] = BoggleGame()
+            games["1"].board = [['C', 'A', 'T', 'T', 'T'],
+                            ['C', 'A', 'T', 'T', 'T'],
+                            ['C', 'A', 'T', 'T', 'T'],
+                            ['C', 'A', 'T', 'T', 'T'],
+                            ['C', 'A', 'T', 'T', 'T']]
+
+            response = client.post("/api/score-word", json= {"gameId":"1", 
+                                    "word":"CAT"})
+            response_json = response.get_json()
+            self.assertEqual(response_json['result'], 'ok')
+
+            response = client.post(
+                "/api/score-word", json={"gameId": "1", "word": "TTT"})
+            response_json = response.get_json()
+            self.assertEqual(response_json['result'], 'not-word')
+
+            response = client.post(
+                "/api/score-word", json={"gameId": "1", "word": "BAT"})
+            response_json = response.get_json()
+            self.assertEqual(response_json['result'], 'not-on-board')
