@@ -9,7 +9,9 @@ app.config["SECRET_KEY"] = "this-is-secret"
 
 # The boggle games created, keyed by game id
 games = {}
-
+#create new instance of boggle game
+#games = global dictionary
+games["1"] = BoggleGame()
 
 @app.get("/")
 def homepage():
@@ -28,3 +30,18 @@ def new_game():
     games[game_id] = game
 
     return json.dumps({"gameId": game_id, "board": game.board})
+
+@app.post("/api/score-word")
+def score_word():
+    """docstring"""
+    data = request.json
+    game_id = data["gameId"]
+    word = data["word"]
+    game = games[game_id]
+
+    if not game.check_word_on_board(word):
+        return jsonify({"result":"not-on-board"})
+    elif not game.is_word_in_word_list(word):
+        return jsonify({"result":"not-word"})
+    else:
+        return jsonify({"result":"ok"})

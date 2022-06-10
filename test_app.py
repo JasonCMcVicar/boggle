@@ -28,7 +28,7 @@ class BoggleAppTestCase(TestCase):
 
             self.assertEqual(response.status_code, 200)
             self.assertIn('<!-- Boggle homepage testing -->', html)
-            
+
 
     def test_api_new_game(self):
         """Test starting a new game."""
@@ -47,3 +47,8 @@ class BoggleAppTestCase(TestCase):
             self.assertEqual(type(response_json["board"][3]), list)
             self.assertEqual(type(response_json["board"][4]), list)
             self.assertIn(response_json["gameId"], games)
+
+    def test_score_word(self):
+        """Test passing a word"""
+
+        #with self.client as client:
